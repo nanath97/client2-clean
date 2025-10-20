@@ -674,7 +674,7 @@ async def handle_start(message: types.Message):
     # 1) Texte d’accueil
     await bot.send_message(
         user_id,
-        "🟢 Laura est en ligne",
+        "🟢 Maeva est en ligne",
         reply_markup=keyboard
     )
 
