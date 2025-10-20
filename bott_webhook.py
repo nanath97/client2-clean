@@ -331,7 +331,7 @@ WHITELIST_LINKS = [
     "https://novapulseonline.wixsite.com/",
     "https://buy.stripe.com/",
     "https://t.me/mini_jessie_bot?start=cdan"
-    "https://t.me/Maevaofbot?start=cdan" # 22 Rajouter  le lien propre de l'admin
+    "https://t.me/Maevaoffbot?start=cdan" # 22 Rajouter  le lien propre de l'admin
 ]
 
 def lien_non_autorise(text):
