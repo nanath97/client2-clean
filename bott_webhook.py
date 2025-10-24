@@ -16,13 +16,6 @@ from middlewares.payment_filter import PaymentFilterMiddleware, reset_free_quota
 
 
 
-# Handler pour récupérer le file_id d'une vidéo
-@dp.message_handler(content_types=['video'])
-async def get_video_file_id(message: types.Message):
-    file_id = message.video.file_id
-    await message.reply(f"🎬 File ID de cette vidéo :\n{file_id}")
-
-
 
 dp.middleware.setup(PaymentFilterMiddleware(authorized_users))
 
@@ -35,7 +28,7 @@ authorized_admin_ids = [ADMIN_ID]
 
 # Constantes pour le bouton VIP et la vidéo de bienvenue (défaut)
 VIP_URL = "https://buy.stripe.com/aFa5kCgFn93h245fi57AI0s"
-WELCOME_VIDEO_FILE_ID = "https://i.imgur.com/YPXyRVj.jpeg"
+WELCOME_VIDEO_FILE_ID = "BAACAgQAAxkBAAMdaPu7_1Cx636un7S_6PpJT9c4MYsAAkEdAAK1pOBTldyvnqVBHao2BA"
 
 
 
@@ -653,12 +646,13 @@ async def handle_start(message: types.Message):
             "✨ Bienvenue dans le VIP mon coeur 💕! Et voici ton cadeau 🎁:"
         )
 
-        # 2 photos VIP
-        await bot.send_photo(chat_id=user_id, photo="https://i.imgur.com/YPXyRVj.jpeg")
-        await bot.send_photo(chat_id=user_id, photo="https://i.imgur.com/YPXyRVj.jpeg")
-
         # 1 vidéo VIP
-        await bot.send_video(chat_id=user_id, video="https://i.imgur.com/YPXyRVj.jpeg")
+        await bot.send_video(chat_id=user_id, video="BAACAgQAAxkBAAMRaPu69Ia8qzfc56zKYEknX_qsfYwAAjcdAAK1pOBTBgJy5g19kV82BA")
+        await bot.send_video(chat_id=user_id, video="BAACAgQAAxkBAAMTaPu7FjIwSdgbw1PAv3fRNz6MyBQAAjkdAAK1pOBTfPMdv6f1yHI2BA")
+        await bot.send_video(chat_id=user_id, video="BAACAgQAAxkBAAMVaPu7TSp6N89h-pBfX_W9vAnLi3MAAjsdAAK1pOBT9JZevezh_Y42BA")
+        await bot.send_video(chat_id=user_id, video="BAACAgQAAxkBAAMXaPu7eerULiJUsHu-Tedoqx-7l_EAAjwdAAK1pOBTyi8fsCElRt02BA")
+        await bot.send_video(chat_id=user_id, video="BAACAgQAAxkBAAMZaPu7uviOTDuf0JvO5mrDiXX2jJgAAj8dAAK1pOBThsdqPbup4B42BA")
+        await bot.send_video(chat_id=user_id, video="BAACAgQAAxkBAAMbaPu71IpIusYr4O-gs_O_QYXvQ-wAAkAdAAK1pOBTd3t8nCwHUrE2BA")
 
         # Logs
         await bot.send_message(ADMIN_ID, f"🌟 Nouveau VIP : {message.from_user.username or message.from_user.first_name}.")
@@ -666,8 +660,8 @@ async def handle_start(message: types.Message):
             pseudo=message.from_user.username or message.from_user.first_name,
             user_id=user_id,
             type_acces="VIP",
-            montant=9.0,
-            contenu="Pack 2 photos + 1 vidéo + accès VIP"
+            montant=19.0,
+            contenu="Pack 6 vidéos + accès VIP"
         )
         await bot.send_message(ADMIN_ID, "✅ VIP Access enregistré dans ton dashboard.")
         return  # on sort ici pour ne pas passer à l’accueil normal
