@@ -52,7 +52,7 @@ paiements_recents = defaultdict(list)  # ex : {14: [datetime1, datetime2]}
 
 
 # 1.=== Variables globales ===
-DEFAULT_FLOU_IMAGE_FILE_ID = "AgACAgEAAxkBAAIOgWgSLV1I3pOt7vxnpci_ba-hb9UXAAK6rjEbM2KQRDdrQA-mqmNwAQADAgADeAADNgQ" # Remplace par le vrai file_id Telegram
+DEFAULT_FLOU_IMAGE_FILE_ID = "AgACAgQAAxkBAANoaPzhwtbZQDj4mH4ej__rZ01R6T0AAnAMaxtZaelTvnrt0xTM3noBAAMCAAN4AAM2BA" # Remplace par le vrai file_id Telegram du client
 
 
 # Fonction de détection de lien non autorisé
