@@ -22,7 +22,7 @@ SHOW_REMAINING_HINT = True                   # afficher "X/5 utilisés" au fil d
 free_msgs_state = {}                         # user_id -> {"count": int, "window_start": float, "last": float}
 
 # Lien VIP (existant)
-VIP_URL = "https://buy.stripe.com/aFa5kCgFn93h245fi57AI0s"
+VIP_URL = "https://buy.stripe.com/9B6fZgdtb2ETaAB0nb7AI0J"
 
 # ===== Anti-doublon par message =====
 # clé = (chat_id, message_id) → timestamp
@@ -44,7 +44,7 @@ async def send_nonvip_reply_after_delay(bot, chat_id: int, user_id: int, authori
         chat_id=chat_id,
         text=(
             "Ravi de te rencontrer mon coeur 💕,\n\nJe voudrais tellement te montrer plus 🔞 mais tu dois être un VIP !\n\n"
-            "En plus pour 20 €, tu auras droit à\n- l'accès VIP à vie ⚡\n- 2 nudes sexy 🔞 \n- 1 video de ma petite chatte qui mouille 💦\nJe t'attends ....🤭\n\n"
+            "En plus pour 19 €, tu auras droit à\n- l'accès VIP à vie ⚡\n- Pack de 6 vidéos super Hot 🔞 \nJe t'attends ....🤭\n\n"
             "<i>🔐 Paiement sécurisé via Stripe</i>\n\n"
             f"{VIP_URL} \n\n"
         ),
@@ -61,9 +61,9 @@ async def send_nonvip_second_reply_after_delay(bot, chat_id: int, user_id: int, 
     await bot.send_message(
         chat_id=chat_id,
         text=(
-            "My heart 💕, Actually, what I want is not to reveal myself for nothing! I really want to be myself so that I can answer you, "
-            "you have to be in my VIP area 💎. I'll be waiting for you there… 🤭\n\n"
-            "<i>🔐 Secure payment via Stripe</i>\n\n"
+            "Mon coeur 💕, En fait, ce que je veux, c'est ne pas me dévoiler pour rien ! Je veux vraiment être moi-même pour pouvoir te répondre., "
+            "Tu dois être un VIP 💎. Je t'attends… 🤭\n\n"
+            "<i>🔐 Paiement sécurisé avec Stripe</i>\n\n"
             f"{VIP_URL} \n\n"
         ),
         reply_markup=InlineKeyboardMarkup().add(
