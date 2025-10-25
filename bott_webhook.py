@@ -13,6 +13,11 @@ from ban_storage import ban_list
 from middlewares.payment_filter import PaymentFilterMiddleware, reset_free_quota
 
 
+# Handler pour récupérer le file_id d'une photo
+@dp.message_handler(content_types=['photo'])
+async def get_photo_file_id(message: types.Message):
+    file_id = message.photo[-1].file_id  # on prend la meilleure résolution
+    await message.reply(f"📸 File ID de cette photo :\n{file_id}")
 
 
 
