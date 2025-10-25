@@ -13,14 +13,6 @@ from ban_storage import ban_list
 from middlewares.payment_filter import PaymentFilterMiddleware, reset_free_quota
 
 
-# Handler pour récupérer le file_id d'une photo
-@dp.message_handler(content_types=['photo'])
-async def get_photo_file_id(message: types.Message):
-    file_id = message.photo[-1].file_id  # on prend la meilleure résolution
-    await message.reply(f"📸 File ID de cette photo :\n{file_id}")
-
-
-
 
 dp.middleware.setup(PaymentFilterMiddleware(authorized_users))
 
@@ -32,7 +24,7 @@ ADMIN_ID = 1386084261
 authorized_admin_ids = [ADMIN_ID]
 
 # Constantes pour le bouton VIP et la vidéo de bienvenue (défaut)
-VIP_URL = "https://buy.stripe.com/9B6fZgdtb2ETaAB0nb7AI0J"
+VIP_URL = "https://buy.stripe.com/9B65kC3SB2ET3899XL7AI0U"
 WELCOME_VIDEO_FILE_ID = "BAACAgQAAxkBAAMdaPu7_1Cx636un7S_6PpJT9c4MYsAAkEdAAK1pOBTldyvnqVBHao2BA"
 
 
@@ -468,7 +460,7 @@ async def demande_contenu_jour(message: types.Message):
         bouton_vip = InlineKeyboardMarkup().add(
             InlineKeyboardButton(
                 text="🔥 Rejoins le VIP pour 19 €",
-                url="https://buy.stripe.com/9B6fZgdtb2ETaAB0nb7AI0J"
+                url="https://buy.stripe.com/9B65kC3SB2ET3899XL7AI0U"
             )
         )
         await message.reply(
@@ -478,7 +470,7 @@ async def demande_contenu_jour(message: types.Message):
 "C'est simple : clique sur le bouton ci-dessous 👇 et tente ta chance dès maintenant\n\n"
 "<i>🔐 Paiement sécurisé via Stripe</i>\n"
 
-            "https://buy.stripe.com/9B6fZgdtb2ETaAB0nb7AI0J\n",
+            "https://buy.stripe.com/9B65kC3SB2ET3899XL7AI0U\n",
             reply_markup=bouton_vip,
             parse_mode="HTML"
         )
@@ -789,7 +781,7 @@ async def envoyer_lien_stripe(message: types.Message):
         "1": "https://buy.stripe.com/cNiaEWbl3a7l9wx3zn7AI0r",
         "9": "https://buy.stripe.com/00wdR83SB4N12457PD7AI0H",
         "14": "https://buy.stripe.com/7sY5kC60JenB5ghee17AI0I",
-        "19": "https://buy.stripe.com/9B6fZgdtb2ETaAB0nb7AI0J",
+        "19": "https://buy.stripe.com/9B65kC3SB2ET3899XL7AI0U",
         "24": "https://buy.stripe.com/aFafZgexf2ET9wx0nb7AI0K",
         "29": "https://buy.stripe.com/00w8wO1Kt5R53895Hv7AI0",
         "34": "https://buy.stripe.com/00w00i3SBdjxfUVb1P7AI0M",
