@@ -616,7 +616,7 @@ async def handle_start(message: types.Message):
             await bot.send_message(
                 user_id,
                 f"✅ Merci pour ton paiement de {montant}€ 💖 ! Ton contenu arrive dans quelques secondes...\n\n"
-                f"_❗️Si tuas le moindre soucis avec ta commande, contacte-nous à novapulse.online@gmail.com_",
+                f"_❗️Si tu as le moindre soucis avec ta commande, contacte-nous à novapulse.online@gmail.com_",
                 parse_mode="Markdown"
             )
             await bot.send_message(ADMIN_ID, f"💰 Nouveau paiement de {montant}€ de {message.from_user.username or message.from_user.first_name}.")
@@ -757,14 +757,14 @@ import re
 
 @dp.message_handler(
     lambda message: message.from_user.id == ADMIN_ID and (
-        (message.text and "/env" in message.text) or 
-        (message.caption and "/env" in message.caption)
+        (message.text and "/env" in message.text.lower()) or 
+        (message.caption and "/env" in message.caption.lower())
     ),
     content_types=[types.ContentType.TEXT, types.ContentType.PHOTO, types.ContentType.VIDEO, types.ContentType.DOCUMENT]
 )
-async def envoyer_lien_stripe(message: types.Message):
+async def envoyer_contenu_payant(message: types.Message):
     if not message.reply_to_message:
-        await bot.send_message(chat_id=ADMIN_ID, text="❗ Utilise la commande en réponse à un message du client.")
+        await bot.send_message(chat_id=ADMIN_ID, text="❗ Utilise cette commande en réponse à un message du client.")
         return
 
     user_id = None
@@ -776,6 +776,8 @@ async def envoyer_lien_stripe(message: types.Message):
     if not user_id:
         await bot.send_message(chat_id=ADMIN_ID, text="❗ Impossible d'identifier le destinataire.")
         return
+    
+
 # 22 Mettre les liens propres à l'admin
     liens_paiement = {
         "1": "https://buy.stripe.com/cNiaEWbl3a7l9wx3zn7AI0r",
@@ -808,88 +810,70 @@ async def envoyer_lien_stripe(message: types.Message):
         await bot.send_message(chat_id=ADMIN_ID, text="❗ Ce montant n'est pas reconnu dans les liens disponibles.")
         return
 
-    nouvelle_legende = re.sub(r"/env(\d+|vip)", f"{lien}", texte)
+    nouvelle_legende = re.sub(r"/env(\d+|vip)", lien, texte)
 
-    if not (message.photo or message.video or message.document):
-        await bot.send_photo(chat_id=user_id, photo=DEFAULT_FLOU_IMAGE_FILE_ID, caption=nouvelle_legende)
-        await bot.send_message(
-    chat_id=user_id,
-    text=f"_🔒 This content at {code} € is locked. Click on the link above to unlock it._",
-    parse_mode="Markdown"
-)
+    if message.photo or message.video or message.document:
+        if message.photo:
+            file_id = message.photo[-1].file_id
+            content_type = types.ContentType.PHOTO
+        elif message.video:
+            file_id = message.video.file_id
+            content_type = types.ContentType.VIDEO
+        else:
+            file_id = message.document.file_id
+            content_type = types.ContentType.DOCUMENT
 
+        contenus_en_attente[user_id] = {
+            "file_id": file_id,
+            "type": content_type,
+            "caption": re.sub(r"/env(\d+|vip)", "", texte, flags=re.IGNORECASE).strip()
+        }
 
-        return
+        await bot.send_message(chat_id=ADMIN_ID, text=f"✅ Contenu prêt pour l'utilisateur {user_id}.")
 
-    if message.content_type == types.ContentType.PHOTO:
-        await bot.send_photo(chat_id=user_id, photo=message.photo[-1].file_id, caption=nouvelle_legende)
-    elif message.content_type == types.ContentType.VIDEO:
-        await bot.send_video(chat_id=user_id, video=message.video.file_id, caption=nouvelle_legende)
-    elif message.content_type == types.ContentType.DOCUMENT:
-        await bot.send_document(chat_id=user_id, document=message.document.file_id, caption=nouvelle_legende)
-    else:
-        await bot.send_message(chat_id=user_id, text=nouvelle_legende, disable_web_page_preview=True)
+        if user_id in paiements_en_attente_par_user:
+            contenu = contenus_en_attente[user_id]
+            if contenu["type"] == types.ContentType.PHOTO:
+                await bot.send_photo(chat_id=user_id, photo=contenu["file_id"], caption=contenu.get("caption"))
+            elif contenu["type"] == types.ContentType.VIDEO:
+                await bot.send_video(chat_id=user_id, video=contenu["file_id"], caption=contenu.get("caption"))
+            elif contenu["type"] == types.ContentType.DOCUMENT:
+                await bot.send_document(chat_id=user_id, document=contenu["file_id"], caption=contenu.get("caption"))
+            paiements_en_attente_par_user.discard(user_id)
+            contenus_en_attente.pop(user_id, None)
+            return
 
-# Stocker le média personnalisé en réponse avec /dev ===
-@dp.message_handler(lambda m: m.from_user.id == ADMIN_ID and (
-    (m.caption and "/dev" in m.caption.lower()) or 
-    (m.text and "/dev" in m.text.lower())
-), content_types=types.ContentType.ANY)
-async def stocker_media_par_user(message: types.Message):
-    if not message.reply_to_message:
-        await bot.send_message(chat_id=ADMIN_ID, text="❗ Utilise cette commande en réponse à un message client.")
-        return
-
-    user_id = None
-    if message.reply_to_message.forward_from:
-        user_id = message.reply_to_message.forward_from.id
-    else:
-        user_id = pending_replies.get((message.chat.id, message.reply_to_message.message_id))
-
-    if not user_id:
-        await bot.send_message(chat_id=ADMIN_ID, text="❗ Impossible d'identifier le destinataire.")
-        return
-
-    if not (message.photo or message.video or message.document):
-        await bot.send_message(chat_id=ADMIN_ID, text="❗ Aucun média détecté.")
-        return
-
-    contenus_en_attente[user_id] = {
-        "file_id": message.photo[-1].file_id if message.photo else message.video.file_id if message.video else message.document.file_id,
-        "type": message.content_type,
-        "caption": (message.caption or message.text or "").replace("/dev", "").strip()
-    }
-
-    await bot.send_message(chat_id=ADMIN_ID, text=f"✅ Contenu prêt pour l'utilisateur {user_id}.")
-
-    # Si le client avait déjà payé → on lui envoie tout de suite
-    if user_id in paiements_en_attente_par_user:
-        contenu = contenus_en_attente[user_id]
-        if contenu["type"] == types.ContentType.PHOTO:
-            await bot.send_photo(chat_id=user_id, photo=contenu["file_id"], caption=contenu["caption"])
-        elif contenu["type"] == types.ContentType.VIDEO:
-            await bot.send_video(chat_id=user_id, video=contenu["file_id"], caption=contenu["caption"])
-        elif contenu["type"] == types.ContentType.DOCUMENT:
-            await bot.send_document(chat_id=user_id, document=contenu["file_id"], caption=contenu["caption"])
-        paiements_en_attente_par_user.remove(user_id)
-        del contenus_en_attente[user_id]   
+    await bot.send_photo(chat_id=user_id, photo=DEFAULT_FLOU_IMAGE_FILE_ID, caption=nouvelle_legende)
+    await bot.send_message(
+        chat_id=user_id,
+        text=f"_🔒 Ce contenu {code} € est verrouillé. Clique sur le lien ci-dessus pour le déverrouiller._",
+        parse_mode="Markdown"
+    )   
 
 # TEST VF debut
 @dp.message_handler(lambda message: message.text == "📖 Commandes" and message.from_user.id == ADMIN_ID)
 async def show_commandes_admin(message: types.Message):
     commandes = (
         "📖 *Liste des commandes disponibles :*\n\n"
-        "📦 */dev* – Stocker un contenu\n"
-        "_À utiliser en réponse à un message client. Joins un média (photo/vidéo) avec la commande dans la légende.Il sera placé en attente et se débloquera au moment où ton client aura payé._\n\n"
         "🔒 */envxx* – Envoyer un contenu payant €\n"
         "_Tape cette commande avec le bon montant (ex. /env14) pour envoyer un contenu flouté avec lien de paiement de 14 €. Ton client recevra directement une image floutée avec le lien de paiement._\n\n"
-        "⚠️ ** – N'oublies pas de sélectionner le message du client à qui tu veux répondre\n"
-
-        "⚠️ ** – Voici la liste des prix : 9, 14, 19, 24, 29, 34, 39, 44, 49, 59, 69, 79, 89, 99\n"
-
+        "⚠️ ** – N'oublies pas de sélectionner le message du client à qui tu veux répondre\n\n"
+        "⚠️ ** – Voici la liste des prix : 9, 14, 19, 24, 29, 34, 39, 44, 49, 59, 69, 79, 89, 99\n\n"
         "📬 *Besoin d’aide ?* Écris-moi par mail : novapulse.online@gmail.com"
     )
-    await message.reply(commandes, parse_mode="Markdown")
+
+    # Création du bouton inline "Mise à jour"
+    inline_keyboard = InlineKeyboardMarkup()
+    inline_keyboard.add(InlineKeyboardButton("🛠️ Mise à jour", callback_data="maj_bot"))
+
+    await message.reply(commandes, parse_mode="Markdown", reply_markup=inline_keyboard)
+
+
+# Callback quand on clique sur le bouton inline
+@dp.callback_query_handler(lambda call: call.data == "maj_bot")
+async def handle_maj_bot(call: types.CallbackQuery):
+    await bot.answer_callback_query(call.id)
+    await bot.send_message(call.message.chat.id, "🔄 Clique ici pour lancer la mise à jour : /start")
 
 @dp.message_handler(lambda message: message.text == "📊 Statistiques" and message.from_user.id == ADMIN_ID)
 async def show_stats_direct(message: types.Message):
