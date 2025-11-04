@@ -8,7 +8,7 @@ from ban_storage import ban_list  # Import de la ban_list
 import asyncio
 import time  # pour la fenêtre glissante
 
-ADMIN_ID = 1386084261  # Ton ID Telegram admin
+ADMIN_ID = 1905610644  # Ton ID Telegram admin
 
 BOUTONS_AUTORISES = [
     "🔞 Voir le contenu du jour... tout en jouant 🎰",
@@ -22,7 +22,7 @@ SHOW_REMAINING_HINT = True                   # afficher "X/5 utilisés" au fil d
 free_msgs_state = {}                         # user_id -> {"count": int, "window_start": float, "last": float}
 
 # Lien VIP (existant)
-VIP_URL = "https://buy.stripe.com/9B65kC3SB2ET3899XL7AI0U"
+VIP_URL = "https://buy.stripe.com/00wdR83SB4N12457PD7AI0H"
 
 # ===== Anti-doublon par message =====
 # clé = (chat_id, message_id) → timestamp

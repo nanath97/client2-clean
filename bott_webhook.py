@@ -20,7 +20,7 @@ dp.middleware.setup(PaymentFilterMiddleware(authorized_users))
 
 # Dictionnaire temporaire pour stocker les derniers messages de chaque client
 last_messages = {}
-ADMIN_ID = 1386084261
+ADMIN_ID = 1905610644
 authorized_admin_ids = [ADMIN_ID]
 
 # Constantes pour le bouton VIP et la vidéo de bienvenue (défaut)
@@ -59,7 +59,7 @@ SELLER_EMAIL = os.getenv("SELLER_EMAIL")  # ✅ ici
 
 
 # ADMIN ID
-ADMIN_ID = 1386084261 # 22
+ADMIN_ID = 1905610644 # 22
 DIRECTEUR_ID = 7334072965  # ID personnel au ceo pour avertir des fraudeurs
 
 # === MEDIA EN ATTENTE ===
